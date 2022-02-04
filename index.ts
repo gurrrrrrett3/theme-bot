@@ -15,13 +15,13 @@ __Client.on("voiceStateUpdate", async (oldState, newState) => {
         if (newState.channelId) {
             // User joined a voice channel
             if (newState.channel?.type != "GUILD_VOICE") return;
-
-            if (!DataManager.getGlobal("enabled")) return
+            if (newState.id == config.discord.USER_ID) return;
+            if (!DataManager.getGlobal("enabled")) return;
             
          const manager = new Manager(newState.channel)
          manager.join()
          const track = await Track.createTrack(newState.id).catch(err => {
-                console.log(err)
+                console.log(`Could not create track for user: ${newState.id}`)
          })
          if (!track) return;
          manager.playAudioResource(track) 
