@@ -22,7 +22,7 @@ const Command = {
                 .addField('Node Version', process.version, true)
                 .addField('Uptime', (Math.floor(process.uptime() / 60) + ' minutes'), true)
                 .addField('Dependencies', dependencies.join('\n'))
-                .setFooter({text: `Found a bug? [Report it here](${Package.bugs.url}`, iconURL: 'interaction.client.user?.displayAvatarURL()'})
+                .setFooter({text: `Found a bug? [Report it here](${Package.bugs.url}`, iconURL: interaction.client.user?.displayAvatarURL()})
                 .setTimestamp();
 
 
