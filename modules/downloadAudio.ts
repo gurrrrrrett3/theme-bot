@@ -5,6 +5,10 @@ export default class AudioDownloader {
     public static async download(guildId: string, userId: string, theme: string | null) {
         if (!theme) return
 
+        if (!fs.existsSync(`./data/audio/${guildId}/`)) {
+            fs.mkdirSync(`./data/audio/${guildId}/`, {recursive: true});
+        }
+
         return new Promise<void>((resolve, reject) => {
             if (fs.existsSync(`./data/audio/${guildId}/`)) {
                 fs.mkdirSync(`./data/audio/${guildId}/`, { recursive: true });
