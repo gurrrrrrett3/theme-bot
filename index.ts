@@ -17,6 +17,7 @@ __Client.on("voiceStateUpdate", async (oldState, newState) => {
             if (newState.channel?.type != "GUILD_VOICE") return;
             if (newState.id == config.discord.USER_ID) return;
             if (!DataManager.getGlobal("enabled")) return;
+            if (DataManager.getUserTheme(newState.id) == null) return;
             
          const manager = new Manager(newState.channel)
          manager.join()
