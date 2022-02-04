@@ -18,10 +18,17 @@ __Client.on("voiceStateUpdate", async (oldState, newState) => {
             if (newState.channel?.type != "GUILD_VOICE") return;
             if (newState.id == config.discord.USER_ID) return;
             if (!DataManager.getGlobal(newState.guild.id, "enabled")) return;
-            if (DataManager.getUserTheme(newState.guild.id, newState.id) == null) return;
+            if (DataManager.getUserTheme(newState.guild.id, newState.id, "ENTER") == null) return;
             
-            PlayTrack.play(newState)
-        }   
+            PlayTrack.play(newState, "ENTER")
+        } else {
+            // User left a voice channel
+            if (oldState.id == config.discord.USER_ID) return;
+            if (!DataManager.getGlobal(oldState.guild.id, "enabled")) return;
+            if (DataManager.getUserTheme(oldState.guild.id, oldState.id, "EXIT") == null) return;
+            
+            PlayTrack.play(oldState, "EXIT")
+        }
     }
 
 });

@@ -1,6 +1,6 @@
 import {AudioResource, createAudioResource} from '@discordjs/voice';
 import fs from 'fs';
-import DataManager from './dataManager';
+import DataManager, { ThemeType } from './dataManager';
 import path from 'path';
 
 export default class Track {
@@ -8,20 +8,23 @@ export default class Track {
     public userID: string
     public guildID: string
 
+    public type: ThemeType = "ENTER"
     public startTime: number = 0
     public playTime: number = 0 
     public volume: number = 100
 
-    constructor(guildId: string, userId:string) {
+    constructor(guildId: string, userId:string, type: ThemeType = "ENTER") {
         const userData = DataManager.getUser(guildId, userId)
         if (userData) {
+            this.type = type
             this.userID = userId
             this.guildID = guildId
-            
-            this.startTime = userData.startTime
-            this.playTime = userData.playTime
-            this.volume = userData.volume
+
+            this.startTime = DataManager.getUserStartTime(guildId, userId, type)
+            this.playTime = DataManager.getUserPlayTime(guildId, userId, type)
+            this.volume =  DataManager.getUserVolume(guildId, userId, type)
         } else {
+        this.type = type
         this.userID = userId
         this.guildID = guildId
 
@@ -34,7 +37,7 @@ export default class Track {
     public async createAudioResource(): Promise<AudioResource<Track>> {
         return new Promise(async (resolve, reject) => {
 
-            const themeLocation = path.resolve(`./data/audio/${this.guildID}/${this.userID}.mp3`);
+            const themeLocation = path.resolve(`./data/audio/${this.guildID}/${this.userID}/${this.type}.mp3`);
             console.log(themeLocation)
 
             if (fs.existsSync(themeLocation)) {
@@ -50,8 +53,8 @@ export default class Track {
         });
     }
 
-    public static async createTrack(guildId: string, userId: string) {
-        return await new Track(guildId, userId).createAudioResource().catch(err => {
+    public static async createTrack(guildId: string, userId: string, type: ThemeType = "ENTER") {
+        return await new Track(guildId, userId, type).createAudioResource().catch(err => {
             console.log(err)
         })
     }

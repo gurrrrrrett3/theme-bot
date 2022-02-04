@@ -83,7 +83,7 @@ export default class CommandClient extends Client {
     const rest = new REST({ version: "9" }).setToken(this.token ?? "");
 
     rest
-      .put(Routes.applicationCommands(this.user?.id ?? config.discord.USER_ID), {
+      .put(Routes.applicationGuildCommands(this.user?.id ?? config.discord.USER_ID, config.discord.GUILD_ID), {
         body: commandsToDeploy,
       })
       .then(() => {

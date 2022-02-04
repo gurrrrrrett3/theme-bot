@@ -1,6 +1,7 @@
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandUserOption, SlashCommandIntegerOption} from '@discordjs/builders';
 import Discord from 'discord.js';
-import DataManager from '../modules/dataManager';
+import DataManager, { ThemeType } from '../modules/dataManager';
+import Util from '../modules/util';
 
 const Command = {
     data: new SlashCommandBuilder()
@@ -16,6 +17,12 @@ const Command = {
             )
             .addStringOption(new SlashCommandStringOption()
             .setRequired(true)
+            .setName('type')
+            .setDescription('The type of theme to set')
+            .addChoices([["Enter", "ENTER"], ["Exit", "EXIT"]])
+            )
+            .addStringOption(new SlashCommandStringOption()
+            .setRequired(true)
             .setName('theme')
             .setDescription('A youtube video url')
             )
@@ -27,6 +34,12 @@ const Command = {
             .setRequired(true)
             .setName('user')
             .setDescription('The user to set the volume for')
+            )
+            .addStringOption(new SlashCommandStringOption()
+            .setRequired(true)
+            .setName('type')
+            .setDescription('The type of theme to set')
+            .addChoices([["Enter", "ENTER"], ["Exit", "EXIT"]])
             )
             .addIntegerOption(new SlashCommandIntegerOption()
             .setRequired(true)
@@ -44,6 +57,12 @@ const Command = {
             .setName('user')
             .setDescription('The user to set the playtime for')
             )
+            .addStringOption(new SlashCommandStringOption()
+            .setRequired(true)
+            .setName('type')
+            .setDescription('The type of theme to set')
+            .addChoices([["Enter", "ENTER"], ["Exit", "EXIT"]])
+            )
             .addIntegerOption(new SlashCommandIntegerOption()
             .setRequired(true)
             .setMinValue(1)
@@ -59,6 +78,12 @@ const Command = {
             .setRequired(true)
             .setName('user')
             .setDescription('The user to remove the theme for')
+            )
+            .addStringOption(new SlashCommandStringOption()
+            .setRequired(true)
+            .setName('type')
+            .setDescription('The type of theme to set')
+            .addChoices([["Enter", "ENTER"], ["Exit", "EXIT"]])
             )
         )
         .addSubcommand(new SlashCommandSubcommandBuilder()
@@ -122,63 +147,62 @@ const Command = {
                 return
             }
             
+            const user = commandOptions.getUser('user')
+                    const theme = commandOptions.getString('theme')
+                    const type = Util.checkType(commandOptions.getString('type') ?? 'ENTER')
+                    const volume = commandOptions.getInteger('volume')
+                    const playtime = commandOptions.getInteger('playtime')
+
             switch (subCommand) {
                 case 'setusertheme':
-                    const user = commandOptions.getUser('user')
-                    const theme = commandOptions.getString('theme')
-                    if (!user || !theme) {
-                        interaction.reply({ephemeral: true, content: 'You must provide a user and a theme'})
+                    
+                    if (!user || !theme || !type) {
+                        interaction.reply({ephemeral: true, content: 'You must provide a user, a theme, and a type'})
                         return
                     }
-                    DataManager.setUserTheme(interaction.guildId, user.id, theme)
+                    DataManager.setUserTheme(interaction.guildId, user.id, type, theme)
                     interaction.reply({ephemeral: true, content: `Set ${user.username}'s theme to ${theme}`})
                     break
                 case 'setuservolume':
-                    const user2 = commandOptions.getUser('user')
-                    const volume = commandOptions.getInteger('volume')
-                    if (!user2 || !volume) {
+                    if (!user || !volume || !type) {
                         interaction.reply({ephemeral: true, content: 'You must provide a user and a volume'})
                         return
                     }
-                    DataManager.setUserVolume(interaction.guildId, user2.id, volume)
-                    interaction.reply({ephemeral: true, content: `Set ${user2.username}'s volume to ${volume}`})
+                    DataManager.setUserVolume(interaction.guildId, user.id, type, volume)
+                    interaction.reply({ephemeral: true, content: `Set ${user.username}'s volume to ${volume}`})
                     break
                 case 'setuserplaytime':
-                    const user6 = commandOptions.getUser('user')
-                    const playtime = commandOptions.getInteger('playtime')
-                    if (!user6 || !playtime) {
+                    
+                    if (!user || !playtime || !type) {
                         interaction.reply({ephemeral: true, content: 'You must provide a user and a playtime'})
                         return
                     }
-                    DataManager.setPlayTime(interaction.guildId, user6.id, playtime)
-                    interaction.reply({ephemeral: true, content: `Set ${user6.username}'s playtime to ${playtime}`})
+                    DataManager.setPlayTime(interaction.guildId, user.id, type,  playtime)
+                    interaction.reply({ephemeral: true, content: `Set ${user.username}'s playtime to ${playtime}`})
                     break
                 case 'removeusertheme':
-                    const user3 = commandOptions.getUser('user')
-                    if (!user3) {
+                    if (!user || !type) {
                         interaction.reply({ephemeral: true, content: 'You must provide a user'})
                         return
                     }
-                    DataManager.setUserTheme(interaction.guildId, user3.id, null)
-                    interaction.reply({ephemeral: true, content: `Removed ${user3.username}'s theme`})
+                    DataManager.setUserTheme(interaction.guildId, user.id, type, null)
+                    interaction.reply({ephemeral: true, content: `Removed ${user.username}'s theme`})
                     break
                 case 'muteuser':
-                    const user4 = commandOptions.getUser('user')
-                    if (!user4) {
+                    if (!user) {
                         interaction.reply({ephemeral: true, content: 'You must provide a user'})
                         return
                     }
-                    DataManager.setUserMuted(interaction.guildId, user4.id, true)
-                    interaction.reply({ephemeral: true, content: `Muted ${user4.username}'s theme`})
+                    DataManager.setUserMuted(interaction.guildId, user.id, true)
+                    interaction.reply({ephemeral: true, content: `Muted ${user.username}'s theme`})
                     break
                 case 'unmuteuser':
-                    const user5 = commandOptions.getUser('user')
-                    if (!user5) {
+                    if (!user) {
                         interaction.reply({ephemeral: true, content: 'You must provide a user'})
                         return
                     }
-                    DataManager.setUserMuted(interaction.guildId, user5.id, false)
-                    interaction.reply({ephemeral: true, content: `Unmuted ${user5.username}`})
+                    DataManager.setUserMuted(interaction.guildId, user.id, false)
+                    interaction.reply({ephemeral: true, content: `Unmuted ${user.username}`})
                     break
                 case 'setvolumescaling':
                     const scaling = commandOptions.getInteger('scaling')

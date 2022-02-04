@@ -48,7 +48,7 @@ export default class Manager {
         const maxThemeTime: number = DataManager.getGlobal(this.connection.guild.id, "maxThemeTime")
 
         if (resource.playbackDuration > maxThemeTime) {
-            DataManager.setPlayTime(this.connection.guild.id, resource.metadata.userID, maxThemeTime)
+            DataManager.setPlayTime(this.connection.guild.id, resource.metadata.userID, resource.metadata.type, maxThemeTime)
         }
 
         if (this.timeout) clearTimeout(this.timeout)
