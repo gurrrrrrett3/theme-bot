@@ -8,7 +8,7 @@ export default class DataManager {
 
         const newUser: UserData = {
             theme: null,
-            volume: 1,
+            volume: 100,
             startTime: 0,
             playTime: globalData.maxThemeTime,
             muted: false
