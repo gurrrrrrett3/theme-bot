@@ -98,6 +98,23 @@ export default class DataManager {
         DataManager.saveFile(data);
     }
 
+    public static getGlobal(key: string): any {
+        const data = DataManager.openFile();
+        // @ts-expect-error
+        return data.global[key];
+    }
+
+    public static async downloadFile(userId: string, file: string) {
+        return new Promise<void>((resolve, reject) => {
+          fetch(file).then(res => res.arrayBuffer()).then(buffer => {
+            fs.writeFileSync(`./data/audio/${userId}.mp3`, Buffer.from(buffer));
+            resolve();
+          }).catch(err => {
+            reject(err);
+          })
+        })
+    }
+
     private static openFile(): Database {
         return JSON.parse(fs.readFileSync("./data/settings.json", "utf8"));
     }

@@ -2,14 +2,14 @@
     "global": {
         "enabled": true,
         "maxThemeTime": "10000",
-        "maxThemeVolume": "1"
+        "maxThemeVolume": "100"
     },
     "users": {
         "232510731067588608": {
             "theme": "https://www.youtube.com/watch?v=qMQ-y9dHE2k",
-            "volume": 1,
+            "volume": 25,
             "startTime": 0,
-            "playTime": "10000",
+            "playTime": 100000,
             "muted": false
         },
         "874218421569593364": {

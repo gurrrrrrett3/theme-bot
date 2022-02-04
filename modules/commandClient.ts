@@ -19,7 +19,8 @@ export default class CommandClient extends Client {
         "GUILD_VOICE_STATES"
       ],
       partials: [
-        "CHANNEL"
+        "CHANNEL",
+        "MESSAGE"
       ]
     });
     this.commands = new Collection();

@@ -14,6 +14,7 @@ const Command = {
             .setName('theme')
             .setDescription('A youtube video url')
             ))
+            
         .addSubcommand(new SlashCommandSubcommandBuilder()
             .setName('volume')
             .setDescription('Set your theme volume')
@@ -24,6 +25,7 @@ const Command = {
             .setName('volume')
             .setDescription('The volume of the theme, from 1 to 100')
             )) 
+            /*
         .addSubcommand(new SlashCommandSubcommandBuilder()
             .setName('starttime')
             .setDescription('Set your theme start time')
@@ -34,6 +36,7 @@ const Command = {
             .setName('starttime')
             .setDescription('The start time of the theme, from 0 to 300 seconds')
             ))
+            */
         .addSubcommand(new SlashCommandSubcommandBuilder()
             .setName('playtime')
             .setDescription('Set your theme play time')
@@ -44,6 +47,7 @@ const Command = {
             .setName('playtime')
             .setDescription('The play time of the theme, from 0 to 300 seconds')
             ))
+            
         .addSubcommand(new SlashCommandSubcommandBuilder()
             .setName('remove')
             .setDescription('Remove your theme')
@@ -64,15 +68,11 @@ const Command = {
                     const theme = commandOptions.getString('theme')
                     if (!theme) return
                     console.log(`Setting theme to ${theme}`)
-                    interaction.reply(`Setting theme to ${theme}...`)
+                    await interaction.reply(`Setting theme to ${theme}...`)
                     DataManager.setUserTheme(interaction.user.id, theme).then(() => {
-                        if (interaction.replied) {
                             interaction.editReply(`Theme set to ${theme}`)
-                        } else {
-                            interaction.reply(`Theme set to ${theme}`)
-                        }
                     }).catch(err => {
-                        interaction.editReply(`Could not set theme: \`${err}\``)
+                            interaction.editReply(`Error setting theme: ${err}`)  
                     })
                     break
                 case 'volume':
@@ -90,11 +90,17 @@ const Command = {
                     DataManager.setStartTime(interaction.user.id, startTime * 1000)
                     break
                 case 'playtime':
-                    const playTime = commandOptions.getInteger('playtime')
+                    let playTime = commandOptions.getInteger('playtime')
                     if (!playTime) return
+                    if (playTime > DataManager.getGlobal("maxThemeTime")) {
+                        interaction.reply(`Play time cannot be more than ${DataManager.getGlobal("maxThemeTime")} seconds, setting to ${DataManager.getGlobal("maxThemeTime")} seconds.`)
+                        playTime = DataManager.getGlobal("maxThemeTime")
+                    } else {
+                        interaction.reply(`Setting play time to ${playTime} seconds`)
+                    }
+                    
                     console.log(`Setting play time to ${playTime} seconds`)
-                    interaction.reply(`Setting play time to ${playTime} seconds`)
-                    DataManager.setPlayTime(interaction.user.id, playTime * 1000)
+                    DataManager.setPlayTime(interaction.user.id, (playTime ?? 1) * 1000)
                     break
                 case 'remove':
                     console.log(`Removing theme`)

@@ -8,6 +8,7 @@ export default class Track {
     public userID: string
     public startTime: number = 0
     public playTime: number = 0 
+    public volume: number = 100
 
     constructor(userId:string) {
         const userData = DataManager.getUser(userId)
@@ -15,10 +16,12 @@ export default class Track {
             this.userID = userId
             this.startTime = userData.startTime
             this.playTime = userData.playTime
+            this.volume = userData.volume
         } else {
         this.userID = userId
         this.startTime = 0
         this.playTime = 0
+        this.volume = 100
         }
     }
 
@@ -31,7 +34,8 @@ export default class Track {
             if (fs.existsSync(themeLocation)) {
 
                 const res = createAudioResource(fs.createReadStream(themeLocation), {
-                    metadata: this
+                    metadata: this,
+                    inlineVolume: true,
                 })
                 resolve(res)
             } else {
@@ -42,7 +46,7 @@ export default class Track {
 
     public static async createTrack(userId: string) {
         return await new Track(userId).createAudioResource().catch(err => {
-            console.log("Could not create track")
+            console.log(err)
         })
     }
 }

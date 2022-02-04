@@ -3,6 +3,7 @@ import Connection from './connection';
 import Queue from "./queue"
 import { AudioPlayer, AudioResource } from '@discordjs/voice';
 import Track from './track';
+import DataManager from './dataManager';
 export default class Manager {
 
     public queue: Queue
@@ -36,8 +37,19 @@ export default class Manager {
             this.join()
         }
 
+        const maxVolume: number = DataManager.getGlobal("maxThemeVolume")
+
         this.connection.playAudio(this.audioPlayer)
         this.audioPlayer.play(resource)
+        resource.volume?.setVolume((resource.metadata.volume / 100) * (maxVolume / 100))
+        
+        if (resource.playbackDuration > parseInt(resource.metadata.playTime.toString()) {
+            DataManager.setPlayTime(resource.metadata.userID, resource.playbackDuration)
+        }
+
+        setTimeout(() => {
+            this.stop()
+        }, parseInt(resource.metadata.playTime.toString()))
   }
   public queueAudioResource(resource: AudioResource<Track>) {
       this.queue.add(resource)

@@ -65,7 +65,7 @@ const Command = {
         )
         .addSubcommand(new SlashCommandSubcommandBuilder()
             .setName('setvolumescaling')
-            .setDescription('Set the volume scaling, will change modify the volume of all users')
+            .setDescription('Set the volume scaling, will modify the volume of all users')
             .addIntegerOption(new SlashCommandIntegerOption()
             .setRequired(true)
             .setMinValue(1)
