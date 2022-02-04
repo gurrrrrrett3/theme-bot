@@ -26,7 +26,7 @@ const Command = {
                 .setTimestamp();
 
 
-            interaction.reply({ephemeral: true, embeds: [embed]});
+            await interaction.reply({ephemeral: true, embeds: [embed]});
         }
 }
 module.exports = Command;
