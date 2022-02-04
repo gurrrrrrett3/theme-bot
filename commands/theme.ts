@@ -92,7 +92,7 @@ const Command = {
                 case 'playtime':
                     let playTime = commandOptions.getInteger('playtime')
                     if (!playTime) return
-                    if (playTime > DataManager.getGlobal("maxThemeTime")) {
+                    if (playTime * 1000 > DataManager.getGlobal("maxThemeTime")) {
                         interaction.reply({ephemeral: true, content: `Play time cannot be more than ${DataManager.getGlobal("maxThemeTime")} seconds, setting to ${DataManager.getGlobal("maxThemeTime")} seconds.`})
                         playTime = DataManager.getGlobal("maxThemeTime")
                     } else {
