@@ -1,6 +1,7 @@
 import Client from "./modules/commandClient";
 import config from "./config.json";
 import { generateDependencyReport } from "@discordjs/voice";
+import DataManager from "./modules/dataManager";
 import Manager from "./modules/manager";
 import Track from "./modules/track";
 
@@ -14,8 +15,10 @@ __Client.on("voiceStateUpdate", async (oldState, newState) => {
         if (newState.channelId) {
             // User joined a voice channel
             if (newState.channel?.type != "GUILD_VOICE") return;
-         const manager = new Manager(newState.channel)
 
+            if (!DataManager.getGlobal("enabled")) return
+            
+         const manager = new Manager(newState.channel)
          manager.join()
          const track = await Track.createTrack(newState.id).catch(err => {
                 console.log(err)

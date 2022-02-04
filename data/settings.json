@@ -1,22 +1,29 @@
 {
     "global": {
         "enabled": true,
-        "maxThemeTime": "10000",
-        "maxThemeVolume": "100"
+        "maxThemeTime": 15000,
+        "maxThemeVolume": 100
     },
     "users": {
         "232510731067588608": {
-            "theme": "https://www.youtube.com/channel/UCGlrmkGiIu-FFAxcifnng4g",
+            "theme": "https://www.youtube.com/watch?v=qMQ-y9dHE2k",
             "volume": 1,
             "startTime": 0,
-            "playTime": "10000",
+            "playTime": 15000,
             "muted": false
         },
         "874218421569593364": {
             "theme": null,
             "volume": 1,
             "startTime": 0,
-            "playTime": "10000",
+            "playTime": 10000,
+            "muted": false
+        },
+        "187391911324155905": {
+            "theme": "https://youtu.be/Ng2dKXWfGTA?t=1177",
+            "volume": 69,
+            "startTime": 0,
+            "playTime": 10000,
             "muted": false
         }
     }

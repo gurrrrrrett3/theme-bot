@@ -41,7 +41,7 @@ export default class Manager {
 
         this.connection.playAudio(this.audioPlayer)
         this.audioPlayer.play(resource)
-        resource.volume?.setVolume((resource.metadata.volume / 100) * (maxVolume / 100))
+        resource.volume?.setVolume((resource.metadata.volume) * (maxVolume / 100))
         
         if (resource.playbackDuration > parseInt(resource.metadata.playTime.toString())) {
             DataManager.setPlayTime(resource.metadata.userID, resource.playbackDuration)

@@ -68,7 +68,7 @@ const Command = {
                     const theme = commandOptions.getString('theme')
                     if (!theme) return
                     console.log(`Setting theme to ${theme}`)
-                    await interaction.reply(`Setting theme to ${theme}...`)
+                    await interaction.reply({ephemeral: true, content: `Setting theme to ${theme}`})
                     DataManager.setUserTheme(interaction.user.id, theme).then(() => {
                             interaction.editReply(`Theme set to ${theme}`)
                     }).catch(err => {
@@ -79,7 +79,7 @@ const Command = {
                     const volume = commandOptions.getInteger('volume')
                     if (!volume) return
                     console.log(`Setting volume to ${volume}`)
-                    interaction.reply(`Setting volume to ${volume}`)
+                    interaction.reply({ephemeral: true, content: `Setting volume to ${volume}`})
                     DataManager.setUserVolume(interaction.user.id, volume)
                     break
                 case 'starttime':
@@ -93,10 +93,10 @@ const Command = {
                     let playTime = commandOptions.getInteger('playtime')
                     if (!playTime) return
                     if (playTime > DataManager.getGlobal("maxThemeTime")) {
-                        interaction.reply(`Play time cannot be more than ${DataManager.getGlobal("maxThemeTime")} seconds, setting to ${DataManager.getGlobal("maxThemeTime")} seconds.`)
+                        interaction.reply({ephemeral: true, content: `Play time cannot be more than ${DataManager.getGlobal("maxThemeTime")} seconds, setting to ${DataManager.getGlobal("maxThemeTime")} seconds.`})
                         playTime = DataManager.getGlobal("maxThemeTime")
                     } else {
-                        interaction.reply(`Setting play time to ${playTime} seconds`)
+                        interaction.reply({ephemeral: true, content: `Setting play time to ${playTime} seconds`})
                     }
                     
                     console.log(`Setting play time to ${playTime} seconds`)
@@ -104,16 +104,18 @@ const Command = {
                     break
                 case 'remove':
                     console.log(`Removing theme`)
-                    interaction.reply(`Removing theme`)
+                    interaction.reply({ephemeral: true, content: `Removed theme`})
                     DataManager.setUserTheme(interaction.user.id, null)
                     break
                 case 'view':
                     console.log(`Viewing theme`)
                     const userTheme = DataManager.getUserTheme(interaction.user.id)
-                    interaction.reply(userTheme ? `Your theme is ${userTheme}` : `You don't have a theme set`)
+                    const userVolume = DataManager.getUserVolume(interaction.user.id)
+                    const userPlayTime = DataManager.getUserPlayTime(interaction.user.id)
+                    interaction.reply({ephemeral: true, content: userTheme ? `Your theme is ${userTheme}\nIt plays for ${userPlayTime / 1000} seconds, at ${Math.round(userVolume * 100)}% volume` : `You don't have a theme set`})
                     break
                 default:
-                    interaction.reply(`Unknown subcommand ${subCommand}`)
+                    interaction.reply({ephemeral: true, content: `Invalid subcommand`})
                     break
             }
         }

@@ -75,7 +75,7 @@ const Command = {
             )
         )
         .addSubcommand(new SlashCommandSubcommandBuilder()
-            .setName('setmaxthemelength')
+            .setName('setmaxplaytime')
             .setDescription('Set the maximum length of themes')
             .addIntegerOption(new SlashCommandIntegerOption()
             .setRequired(true)
@@ -101,7 +101,7 @@ const Command = {
             const subCommand = commandData[0].name
 
             if (!interaction.memberPermissions?.has('ADMINISTRATOR')) {
-                interaction.reply('You do not have permission to use this command')
+                interaction.reply({ephemeral: true, content: 'You do not have permission to use this command'})
                 return
             }
             
@@ -110,77 +110,77 @@ const Command = {
                     const user = commandOptions.getUser('user')
                     const theme = commandOptions.getString('theme')
                     if (!user || !theme) {
-                        interaction.reply('You must provide a user and a theme')
+                        interaction.reply({ephemeral: true, content: 'You must provide a user and a theme'})
                         return
                     }
                     DataManager.setUserTheme(user.id, theme)
-                    interaction.reply(`Set ${user.username}'s theme to ${theme}`)
+                    interaction.reply({ephemeral: true, content: `Set ${user.username}'s theme to ${theme}`})
                     break
                 case 'setuservolume':
                     const user2 = commandOptions.getUser('user')
                     const volume = commandOptions.getInteger('volume')
                     if (!user2 || !volume) {
-                        interaction.reply('You must provide a user and a volume')
+                        interaction.reply({ephemeral: true, content: 'You must provide a user and a volume'})
                         return
                     }
                     DataManager.setUserVolume(user2.id, volume)
-                    interaction.reply(`Set ${user2.username}'s volume to ${volume}`)
+                    interaction.reply({ephemeral: true, content: `Set ${user2.username}'s volume to ${volume}`})
                     break
                 case 'removeusertheme':
                     const user3 = commandOptions.getUser('user')
                     if (!user3) {
-                        interaction.reply('You must provide a user')
+                        interaction.reply({ephemeral: true, content: 'You must provide a user'})
                         return
                     }
                     DataManager.setUserTheme(user3.id, null)
-                    interaction.reply(`Removed ${user3.username}'s theme`)
+                    interaction.reply({ephemeral: true, content: `Removed ${user3.username}'s theme`})
                     break
                 case 'muteuser':
                     const user4 = commandOptions.getUser('user')
                     if (!user4) {
-                        interaction.reply('You must provide a user')
+                        interaction.reply({ephemeral: true, content: 'You must provide a user'})
                         return
                     }
                     DataManager.setUserMuted(user4.id, true)
-                    interaction.reply(`Muted ${user4.username}`)
+                    interaction.reply({ephemeral: true, content: `Muted ${user4.username}'s theme`})
                     break
                 case 'unmuteuser':
                     const user5 = commandOptions.getUser('user')
                     if (!user5) {
-                        interaction.reply('You must provide a user')
+                        interaction.reply({ephemeral: true, content: 'You must provide a user'})
                         return
                     }
                     DataManager.setUserMuted(user5.id, false)
-                    interaction.reply(`Unmuted ${user5.username}`)
+                    interaction.reply({ephemeral: true, content: `Unmuted ${user5.username}`})
                     break
                 case 'setvolumescaling':
                     const scaling = commandOptions.getInteger('scaling')
                     if (!scaling) {
-                        interaction.reply('You must provide a scaling value')
+                        interaction.reply({ephemeral: true, content: 'You must provide a volume scaling value'})
                         return
                     }
                     DataManager.setGlobal("maxThemeVolume", scaling)
-                    interaction.reply(`Set the volume scaling to ${scaling}`)
+                    interaction.reply({ephemeral: true, content: `Set volume scaling to ${scaling}`})
                     break
                 case 'setmaxthemelength':
                     const length = commandOptions.getInteger('length')
                     if (!length) {
-                        interaction.reply('You must provide a length value')
+                        interaction.reply({ephemeral: true, content: 'You must provide a length value'})
                         return
                     }
                     DataManager.setGlobal("maxThemeTime", length * 1000)
-                    interaction.reply(`Set the maximum theme length to ${length} seconds`)
+                    interaction.reply({ephemeral: true, content: `Set max theme length to ${length} seconds`})
                     break
                 case 'enable':
                     DataManager.setGlobal("enabled", true)
-                    interaction.reply('Enabled playing of themes')
+                    interaction.reply({ephemeral: true, content: 'Enabled playing of themes'})
                     break
                 case 'disable':
                     DataManager.setGlobal("enabled", false)
-                    interaction.reply('Disabled playing of themes')
+                    interaction.reply({ephemeral: true, content: 'Disabled playing of themes'})
                     break
                 default:
-                    interaction.reply('Invalid subcommand')
+                    interaction.reply({ephemeral: true, content: 'Invalid subcommand'})
                     break
             }
         }
