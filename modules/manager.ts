@@ -13,6 +13,8 @@ export default class Manager {
     public connection: Connection
     public audioPlayer: AudioPlayer
 
+    public timeout: NodeJS.Timeout | undefined
+
     constructor(voiceChannel: Discord.VoiceChannel) {
         this.queue = new Queue()
 
@@ -47,7 +49,8 @@ export default class Manager {
             DataManager.setPlayTime(resource.metadata.userID, resource.playbackDuration)
         }
 
-        setTimeout(() => {
+        if (this.timeout) clearTimeout(this.timeout)
+        this.timeout = setTimeout(() => {
             this.stop()
         }, resource.metadata.playTime)
   }
