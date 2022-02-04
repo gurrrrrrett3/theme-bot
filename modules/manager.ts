@@ -45,8 +45,8 @@ export default class Manager {
         this.audioPlayer.play(resource)
         resource.volume?.setVolume((resource.metadata.volume / 100) * (maxVolume / 100))
         
-        if (resource.playbackDuration > parseInt(resource.metadata.playTime.toString())) {
-            DataManager.setPlayTime(resource.metadata.userID, resource.playbackDuration)
+        if (resource.playbackDuration > DataManager.getGlobal("maxThemeTime")) {
+            DataManager.setPlayTime(resource.metadata.userID, DataManager.getGlobal("maxThemeTime"))
         }
 
         if (this.timeout) clearTimeout(this.timeout)
