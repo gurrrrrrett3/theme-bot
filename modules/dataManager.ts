@@ -1,23 +1,25 @@
 import fs from "fs";
+import AudioDownloader from "./downloadAudio";
 export default class DataManager {
     
     public static newUser(userId: string) {
-        const newUser = {
+
+        const globalData = DataManager.openFile().global
+
+        const newUser: UserData = {
             theme: null,
             volume: 1,
+            startTime: 0,
+            playTime: globalData.maxThemeTime,
             muted: false
         }
-        const data = JSON.parse(DataManager.openFile());
+        const data = DataManager.openFile();
         data.users[userId] = newUser;
         DataManager.saveFile(data);
     }
 
-    public static getUser(userId: string): {
-        theme: string | null;
-        volume: number;
-        muted: boolean;
-    } {
-        const data = JSON.parse(DataManager.openFile());
+    public static getUser(userId: string): UserData {
+        const data = DataManager.openFile();
         if (data.users[userId]) {
             return data.users[userId];
         } else {
@@ -26,21 +28,35 @@ export default class DataManager {
         }
     }
 
-    public static saveUser(userId: string, data: any) {
-        const userData = JSON.parse(DataManager.openFile());
+    public static saveUser(userId: string, data: UserData) {
+        const userData = DataManager.openFile();
         userData.users[userId] = data;
         DataManager.saveFile(userData);
     }
 
-    public static setUserTheme(userId: string, theme: string | null) {
+    public static async setUserTheme(userId: string, theme: string | null): Promise<void> {
         const user = this.getUser(userId);
         user.theme = theme;
         this.saveUser(userId, user);
+
+        return AudioDownloader.download(userId, theme);
     }
 
     public static setUserVolume(userId: string, volume: number) {
         const user = this.getUser(userId);
         user.volume = volume;
+        this.saveUser(userId, user);
+    }
+
+    public static setStartTime(userId: string, time: number) {
+        const user = this.getUser(userId);
+        user.startTime = time;
+        this.saveUser(userId, user);
+    }
+
+    public static setPlayTime(userId: string, time: number) {
+        const user = this.getUser(userId);
+        user.playTime = time;
         this.saveUser(userId, user);
     }
 
@@ -60,14 +76,30 @@ export default class DataManager {
         return user.volume;
     }
 
+    public static getUserStartTime(userId: string): number {
+        const user = this.getUser(userId);
+        return user.startTime;
+    }
+
+    public static getUserPlayTime(userId: string): number {
+        const user = this.getUser(userId);
+        return user.playTime;
+    }
+
     public static getUserMuted(userId: string): boolean {
         const user = this.getUser(userId);
         return user.muted;
     }
 
+    public static setGlobal(key: string, value: any) {
+        const data = DataManager.openFile();
+        // @ts-expect-error
+        data.global[key] = value;
+        DataManager.saveFile(data);
+    }
 
-    private static openFile() {
-        return fs.readFileSync("./data/settings.json", "utf8");
+    private static openFile(): Database {
+        return JSON.parse(fs.readFileSync("./data/settings.json", "utf8"));
     }
 
     private static saveFile(data: Database) {
@@ -78,6 +110,8 @@ export default class DataManager {
 export interface UserData {
     theme: string | null;
     volume: number;
+    startTime: number;
+    playTime: number;
     muted: boolean;
 }
 

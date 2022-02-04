@@ -14,14 +14,9 @@ export default class CommandClient extends Client {
   constructor(token: string) {
     super({
       intents: [
-        "DIRECT_MESSAGES",
-        "DIRECT_MESSAGE_TYPING",
+        "GUILDS",
         "GUILD_INTEGRATIONS",
-        "GUILD_WEBHOOKS",
-        "GUILD_MESSAGES",
-        "GUILD_MESSAGE_REACTIONS",
-        "GUILD_MESSAGE_TYPING",
-        "GUILDS"
+        "GUILD_VOICE_STATES"
       ],
       partials: [
         "CHANNEL"
@@ -115,15 +110,6 @@ export default class CommandClient extends Client {
     for (const file of selectMenuFiles) {
       const selectMenu: SelectMenuFile = require(`../selectMenus/${file}`);
       this.selectMenus.set(selectMenu.data.customId, selectMenu);
-    }
-  }
-
-  private getEvents(): void {
-    const eventFiles = fs.readdirSync("./dist/events").filter((file) => file.endsWith(".js"));
-    console.log(`Loading ${eventFiles.length} events`);
-    for (const file of eventFiles) {
-      const event: any = require(`../events/${file}`);
-      this.on(event.name, event.execute);
     }
   }
 }

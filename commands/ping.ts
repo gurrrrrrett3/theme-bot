@@ -11,7 +11,7 @@ const Command = {
                 interaction.reply('Could not send ping message');
                 return
             }
-            interaction.reply(`Pong! Latency is ${pingMessage.createdTimestamp - interaction.createdTimestamp}ms. API Latency is ${Math.round(interaction.client.ws.ping)}ms`).then(() => {
+            interaction.reply(`Pong! Latency is ${pingMessage.createdTimestamp - interaction.createdTimestamp}ms. API Latency is ${Math.round(interaction.client.ws.ping)}ms.`).then(() => {
                 pingMessage?.delete();
             })
                 

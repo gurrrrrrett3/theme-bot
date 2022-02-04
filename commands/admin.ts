@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandUserOption, SlashCommandIntegerOption} from '@discordjs/builders';
 import Discord from 'discord.js';
+import DataManager from '../modules/dataManager';
 
 const Command = {
     data: new SlashCommandBuilder()
@@ -94,7 +95,94 @@ const Command = {
         )
         ,
         async execute(interaction: Discord.CommandInteraction, ...args: any[]) {
-            await interaction.reply('');
+            if (!interaction.isCommand()) return
+            const commandOptions = interaction.options
+            const commandData = commandOptions.data
+            const subCommand = commandData[0].name
+
+            if (!interaction.memberPermissions?.has('ADMINISTRATOR')) {
+                interaction.reply('You do not have permission to use this command')
+                return
+            }
+            
+            switch (subCommand) {
+                case 'setusertheme':
+                    const user = commandOptions.getUser('user')
+                    const theme = commandOptions.getString('theme')
+                    if (!user || !theme) {
+                        interaction.reply('You must provide a user and a theme')
+                        return
+                    }
+                    DataManager.setUserTheme(user.id, theme)
+                    interaction.reply(`Set ${user.username}'s theme to ${theme}`)
+                    break
+                case 'setuservolume':
+                    const user2 = commandOptions.getUser('user')
+                    const volume = commandOptions.getInteger('volume')
+                    if (!user2 || !volume) {
+                        interaction.reply('You must provide a user and a volume')
+                        return
+                    }
+                    DataManager.setUserVolume(user2.id, volume)
+                    interaction.reply(`Set ${user2.username}'s volume to ${volume}`)
+                    break
+                case 'removeusertheme':
+                    const user3 = commandOptions.getUser('user')
+                    if (!user3) {
+                        interaction.reply('You must provide a user')
+                        return
+                    }
+                    DataManager.setUserTheme(user3.id, null)
+                    interaction.reply(`Removed ${user3.username}'s theme`)
+                    break
+                case 'muteuser':
+                    const user4 = commandOptions.getUser('user')
+                    if (!user4) {
+                        interaction.reply('You must provide a user')
+                        return
+                    }
+                    DataManager.setUserMuted(user4.id, true)
+                    interaction.reply(`Muted ${user4.username}`)
+                    break
+                case 'unmuteuser':
+                    const user5 = commandOptions.getUser('user')
+                    if (!user5) {
+                        interaction.reply('You must provide a user')
+                        return
+                    }
+                    DataManager.setUserMuted(user5.id, false)
+                    interaction.reply(`Unmuted ${user5.username}`)
+                    break
+                case 'setvolumescaling':
+                    const scaling = commandOptions.getInteger('scaling')
+                    if (!scaling) {
+                        interaction.reply('You must provide a scaling value')
+                        return
+                    }
+                    DataManager.setGlobal("maxThemeVolume", scaling)
+                    interaction.reply(`Set the volume scaling to ${scaling}`)
+                    break
+                case 'setmaxthemelength':
+                    const length = commandOptions.getInteger('length')
+                    if (!length) {
+                        interaction.reply('You must provide a length value')
+                        return
+                    }
+                    DataManager.setGlobal("maxThemeTime", length * 1000)
+                    interaction.reply(`Set the maximum theme length to ${length} seconds`)
+                    break
+                case 'enable':
+                    DataManager.setGlobal("enabled", true)
+                    interaction.reply('Enabled playing of themes')
+                    break
+                case 'disable':
+                    DataManager.setGlobal("enabled", false)
+                    interaction.reply('Disabled playing of themes')
+                    break
+                default:
+                    interaction.reply('Invalid subcommand')
+                    break
+            }
         }
 }
 module.exports = Command;
