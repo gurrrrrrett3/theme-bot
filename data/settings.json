@@ -6,10 +6,10 @@
     },
     "users": {
         "232510731067588608": {
-            "theme": "https://www.youtube.com/watch?v=qMQ-y9dHE2k",
-            "volume": 25,
+            "theme": "https://www.youtube.com/channel/UCGlrmkGiIu-FFAxcifnng4g",
+            "volume": 1,
             "startTime": 0,
-            "playTime": 100000,
+            "playTime": "10000",
             "muted": false
         },
         "874218421569593364": {
