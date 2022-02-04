@@ -135,7 +135,7 @@ const Command = {
           ephemeral: true,
           content: userTheme
             ? `Your theme is ${userTheme}\nIt plays for ${userPlayTime / 1000} seconds, at ${Math.round(
-                userVolume * 100
+                userVolume
               )}% volume`
             : `You don't have a theme set`,
         });
