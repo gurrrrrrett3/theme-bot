@@ -4,6 +4,7 @@ import { generateDependencyReport } from "@discordjs/voice";
 import DataManager from "./modules/dataManager";
 import Manager from "./modules/manager";
 import Track from "./modules/track";
+import PlayTrack from "./modules/playTrack";
 
 console.log(generateDependencyReport())
 
@@ -19,14 +20,10 @@ __Client.on("voiceStateUpdate", async (oldState, newState) => {
             if (!DataManager.getGlobal("enabled")) return;
             if (DataManager.getUserTheme(newState.id) == null) return;
             
-         const manager = new Manager(newState.channel)
-         manager.join()
-         const track = await Track.createTrack(newState.id).catch(err => {
-                console.log(`Could not create track for user: ${newState.id}`)
-         })
-         if (!track) return;
-         manager.playAudioResource(track) 
-        }
+            PlayTrack.play(newState)
+        }   
     }
 
 });
+
+export default __Client as Client;

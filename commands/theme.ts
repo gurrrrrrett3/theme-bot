@@ -1,6 +1,8 @@
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandIntegerOption, SlashCommandNumberOption } from '@discordjs/builders';
 import Discord from 'discord.js';
 import DataManager from '../modules/dataManager';
+import __Client from '..';
+import PlayTrack from '../modules/playTrack';
 
 const Command = {
     data: new SlashCommandBuilder()
@@ -55,6 +57,10 @@ const Command = {
         .addSubcommand(new SlashCommandSubcommandBuilder()
             .setName('view')
             .setDescription('View your theme')
+        )
+        .addSubcommand(new SlashCommandSubcommandBuilder()
+            .setName('play')
+            .setDescription('Play your theme')
         )
         ,
         async execute(interaction: Discord.CommandInteraction, ...args: any[]) {
@@ -114,6 +120,27 @@ const Command = {
                     const userPlayTime = DataManager.getUserPlayTime(interaction.user.id)
                     interaction.reply({ephemeral: true, content: userTheme ? `Your theme is ${userTheme}\nIt plays for ${userPlayTime / 1000} seconds, at ${Math.round(userVolume * 100)}% volume` : `You don't have a theme set`})
                     break
+                case 'play':
+                    console.log(`Playing theme`)
+                    const userTheme2 = DataManager.getUserTheme(interaction.user.id)
+                    if (!userTheme2) {
+                        interaction.reply({ephemeral: true, content: `You don't have a theme set`})
+                        return
+                    }
+                    //Check if user in voice channel
+                    let channel: Discord.VoiceChannel | undefined
+                    interaction.guild?.channels.cache.forEach(channel => {
+                        if (channel.type === 'GUILD_VOICE') {
+                            if (channel.members.has(interaction.user.id)) {
+                                channel = channel as Discord.VoiceChannel
+                            }
+                        }
+                    })
+                    if (!channel) {
+                        interaction.reply({ephemeral: true, content: `You must be in a voice channel to play a theme`})
+                        return
+                    }
+                    PlayTrack.playFromChannel(channel, interaction.user.id)
                 default:
                     interaction.reply({ephemeral: true, content: `Invalid subcommand`})
                     break
