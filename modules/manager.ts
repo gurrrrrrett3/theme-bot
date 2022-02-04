@@ -45,14 +45,16 @@ export default class Manager {
         this.audioPlayer.play(resource)
         resource.volume?.setVolume((resource.metadata.volume / 100) * (maxVolume / 100))
         
-        if (resource.playbackDuration > DataManager.getGlobal("maxThemeTime")) {
-            DataManager.setPlayTime(resource.metadata.userID, DataManager.getGlobal("maxThemeTime"))
+        const maxThemeTime: number = DataManager.getGlobal("maxThemeTime")
+
+        if (resource.playbackDuration > maxThemeTime) {
+            DataManager.setPlayTime(resource.metadata.userID, maxThemeTime)
         }
 
         if (this.timeout) clearTimeout(this.timeout)
         this.timeout = setTimeout(() => {
             this.stop()
-        }, resource.metadata.playTime)
+        }, resource.metadata.playTime > maxThemeTime ? maxThemeTime : resource.metadata.playTime)
   }
   public queueAudioResource(resource: AudioResource<Track>) {
       this.queue.add(resource)
