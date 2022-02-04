@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandIntegerOption } from '@discordjs/builders';
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandIntegerOption, SlashCommandNumberOption } from '@discordjs/builders';
 import Discord from 'discord.js';
 import DataManager from '../modules/dataManager';
 
@@ -40,7 +40,7 @@ const Command = {
         .addSubcommand(new SlashCommandSubcommandBuilder()
             .setName('playtime')
             .setDescription('Set your theme play time')
-            .addIntegerOption(new SlashCommandIntegerOption()
+            .addNumberOption(new SlashCommandNumberOption()
             .setRequired(true)
             .setMinValue(0)
             .setMaxValue(300)
@@ -90,7 +90,7 @@ const Command = {
                     DataManager.setStartTime(interaction.user.id, startTime * 1000)
                     break
                 case 'playtime':
-                    let playTime = commandOptions.getInteger('playtime')
+                    let playTime = commandOptions.getNumber('playtime')
                     if (!playTime) return
                     if (playTime > DataManager.getGlobal("maxThemeTime") / 1000) {
                         interaction.reply({ephemeral: true, content: `Play time cannot be more than ${DataManager.getGlobal("maxThemeTime") / 1000} seconds, setting to ${DataManager.getGlobal("maxThemeTime") / 1000} seconds.`})
