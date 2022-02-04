@@ -1,0 +1,14 @@
+{
+    "global": {
+        "enabled": true,
+        "maxThemeTime": "10000",
+        "maxThemeVolume": "1"
+    },
+    "users": {
+        "232510731067588608": {
+            "theme": "A",
+            "volume": 1,
+            "muted": false
+        }
+    }
+}
