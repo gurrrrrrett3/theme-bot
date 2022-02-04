@@ -70,6 +70,7 @@ const Command = {
     .addSubcommand(new SlashCommandSubcommandBuilder().setName("play").setDescription("Play your theme")),
   async execute(interaction: Discord.CommandInteraction, ...args: any[]) {
     if (!interaction.isCommand()) return;
+    if (!interaction.guildId) return;
     const commandOptions = interaction.options;
     const commandData = commandOptions.data;
     const subCommand = commandData[0].name;
@@ -80,7 +81,7 @@ const Command = {
         if (!theme) return;
         console.log(`Setting theme to ${theme}`);
         await interaction.reply({ ephemeral: true, content: `Setting theme to ${theme}` });
-        DataManager.setUserTheme(interaction.user.id, theme)
+        DataManager.setUserTheme(interaction.guildId, interaction.user.id, theme)
           .then(() => {
             interaction.editReply(`Theme set to ${theme}`);
           })
@@ -93,43 +94,43 @@ const Command = {
         if (!volume) return;
         console.log(`Setting volume to ${volume}`);
         interaction.reply({ ephemeral: true, content: `Setting volume to ${volume}` });
-        DataManager.setUserVolume(interaction.user.id, volume);
+        DataManager.setUserVolume(interaction.guildId, interaction.user.id, volume);
         break;
       case "starttime":
         const startTime = commandOptions.getInteger("starttime");
         if (!startTime) return;
         console.log(`Setting start time to ${startTime}`);
         interaction.reply(`Setting start time to ${startTime} seconds`);
-        DataManager.setStartTime(interaction.user.id, startTime * 1000);
+        DataManager.setStartTime(interaction.guildId, interaction.user.id, startTime * 1000);
         break;
       case "playtime":
         let playTime = commandOptions.getNumber("playtime");
         if (!playTime) return;
-        if (playTime > DataManager.getGlobal("maxThemeTime") / 1000) {
+        if (playTime > DataManager.getGlobal(interaction.guildId, "maxThemeTime") / 1000) {
           interaction.reply({
             ephemeral: true,
             content: `Play time cannot be more than ${
-              DataManager.getGlobal("maxThemeTime") / 1000
-            } seconds, setting to ${DataManager.getGlobal("maxThemeTime") / 1000} seconds.`,
+              DataManager.getGlobal(interaction.guildId, "maxThemeTime") / 1000
+            } seconds, setting to ${DataManager.getGlobal(interaction.guildId, "maxThemeTime") / 1000} seconds.`,
           });
-          playTime = DataManager.getGlobal("maxThemeTime");
+          playTime = DataManager.getGlobal(interaction.guildId, "maxThemeTime");
         } else {
           interaction.reply({ ephemeral: true, content: `Setting play time to ${playTime} seconds` });
         }
 
         console.log(`Setting play time to ${playTime} seconds`);
-        DataManager.setPlayTime(interaction.user.id, (playTime ?? 1) * 1000);
+        DataManager.setPlayTime(interaction.guildId, interaction.user.id, (playTime ?? 1) * 1000);
         break;
       case "remove":
         console.log(`Removing theme`);
         interaction.reply({ ephemeral: true, content: `Removed theme` });
-        DataManager.setUserTheme(interaction.user.id, null);
+        DataManager.setUserTheme(interaction.guildId, interaction.user.id, null);
         break;
       case "view":
         console.log(`Viewing theme`);
-        const userTheme = DataManager.getUserTheme(interaction.user.id);
-        const userVolume = DataManager.getUserVolume(interaction.user.id);
-        const userPlayTime = DataManager.getUserPlayTime(interaction.user.id);
+        const userTheme = DataManager.getUserTheme(interaction.guildId, interaction.user.id);
+        const userVolume = DataManager.getUserVolume(interaction.guildId, interaction.user.id);
+        const userPlayTime = DataManager.getUserPlayTime(interaction.guildId, interaction.user.id);
         interaction.reply({
           ephemeral: true,
           content: userTheme
@@ -141,7 +142,7 @@ const Command = {
         break;
       case "play":
         console.log(`Playing theme`);
-        const userTheme2 = DataManager.getUserTheme(interaction.user.id);
+        const userTheme2 = DataManager.getUserTheme(interaction.guildId, interaction.user.id);
         if (!userTheme2) {
           interaction.reply({ ephemeral: true, content: `You don't have a theme set` });
           return;
@@ -159,7 +160,7 @@ const Command = {
           return;
         }
         PlayTrack.playFromChannel(savedChannel, interaction.user.id);
-        interaction.reply({ ephemeral: true, content: `Playing theme: ${DataManager.getUserTheme(interaction.user.id)}` });
+        interaction.reply({ ephemeral: true, content: `Playing theme: ${DataManager.getUserTheme(interaction.guildId, interaction.user.id)}` });
         break
       default:
         interaction.reply({ ephemeral: true, content: `Invalid subcommand` });

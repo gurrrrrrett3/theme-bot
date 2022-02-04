@@ -112,6 +112,7 @@ const Command = {
         ,
         async execute(interaction: Discord.CommandInteraction, ...args: any[]) {
             if (!interaction.isCommand()) return
+            if (!interaction.guildId) return interaction.reply('This command can only be used in a server')
             const commandOptions = interaction.options
             const commandData = commandOptions.data
             const subCommand = commandData[0].name
@@ -129,7 +130,7 @@ const Command = {
                         interaction.reply({ephemeral: true, content: 'You must provide a user and a theme'})
                         return
                     }
-                    DataManager.setUserTheme(user.id, theme)
+                    DataManager.setUserTheme(interaction.guildId, user.id, theme)
                     interaction.reply({ephemeral: true, content: `Set ${user.username}'s theme to ${theme}`})
                     break
                 case 'setuservolume':
@@ -139,7 +140,7 @@ const Command = {
                         interaction.reply({ephemeral: true, content: 'You must provide a user and a volume'})
                         return
                     }
-                    DataManager.setUserVolume(user2.id, volume)
+                    DataManager.setUserVolume(interaction.guildId, user2.id, volume)
                     interaction.reply({ephemeral: true, content: `Set ${user2.username}'s volume to ${volume}`})
                     break
                 case 'setuserplaytime':
@@ -149,7 +150,7 @@ const Command = {
                         interaction.reply({ephemeral: true, content: 'You must provide a user and a playtime'})
                         return
                     }
-                    DataManager.setPlayTime(user6.id, playtime)
+                    DataManager.setPlayTime(interaction.guildId, user6.id, playtime)
                     interaction.reply({ephemeral: true, content: `Set ${user6.username}'s playtime to ${playtime}`})
                     break
                 case 'removeusertheme':
@@ -158,7 +159,7 @@ const Command = {
                         interaction.reply({ephemeral: true, content: 'You must provide a user'})
                         return
                     }
-                    DataManager.setUserTheme(user3.id, null)
+                    DataManager.setUserTheme(interaction.guildId, user3.id, null)
                     interaction.reply({ephemeral: true, content: `Removed ${user3.username}'s theme`})
                     break
                 case 'muteuser':
@@ -167,7 +168,7 @@ const Command = {
                         interaction.reply({ephemeral: true, content: 'You must provide a user'})
                         return
                     }
-                    DataManager.setUserMuted(user4.id, true)
+                    DataManager.setUserMuted(interaction.guildId, user4.id, true)
                     interaction.reply({ephemeral: true, content: `Muted ${user4.username}'s theme`})
                     break
                 case 'unmuteuser':
@@ -176,7 +177,7 @@ const Command = {
                         interaction.reply({ephemeral: true, content: 'You must provide a user'})
                         return
                     }
-                    DataManager.setUserMuted(user5.id, false)
+                    DataManager.setUserMuted(interaction.guildId, user5.id, false)
                     interaction.reply({ephemeral: true, content: `Unmuted ${user5.username}`})
                     break
                 case 'setvolumescaling':
@@ -185,7 +186,7 @@ const Command = {
                         interaction.reply({ephemeral: true, content: 'You must provide a volume scaling value'})
                         return
                     }
-                    DataManager.setGlobal("maxThemeVolume", scaling)
+                    DataManager.setGlobal(interaction.guildId, "maxThemeVolume", scaling)
                     interaction.reply({ephemeral: true, content: `Set volume scaling to ${scaling}`})
                     break
                 case 'setmaxplaytime':
@@ -194,15 +195,15 @@ const Command = {
                         interaction.reply({ephemeral: true, content: 'You must provide a length value'})
                         return
                     }
-                    DataManager.setGlobal("maxThemeTime", length * 1000)
+                    DataManager.setGlobal(interaction.guildId, "maxThemeTime", length * 1000)
                     interaction.reply({ephemeral: true, content: `Set max theme length to ${length} seconds`})
                     break
                 case 'enable':
-                    DataManager.setGlobal("enabled", true)
+                    DataManager.setGlobal(interaction.guildId, "enabled", true)
                     interaction.reply({ephemeral: true, content: 'Enabled playing of themes'})
                     break
                 case 'disable':
-                    DataManager.setGlobal("enabled", false)
+                    DataManager.setGlobal(interaction.guildId, "enabled", false)
                     interaction.reply({ephemeral: true, content: 'Disabled playing of themes'})
                     break
                 default:

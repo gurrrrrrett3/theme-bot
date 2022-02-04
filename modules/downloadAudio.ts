@@ -2,12 +2,14 @@ import ytdl from "ytdl-core";
 import fs from "fs";
 export default class AudioDownloader {
 
-    public static async download(userId: string, theme: string | null) {
+    public static async download(guildId: string, userId: string, theme: string | null) {
         if (!theme) return
 
         return new Promise<void>((resolve, reject) => {
-        
-            const file = fs.createWriteStream(`./data/audio/${userId}.mp3`);
+            if (fs.existsSync(`./data/audio/${guildId}/`)) {
+                fs.mkdirSync(`./data/audio/${guildId}/`, { recursive: true });
+            }
+            const file = fs.createWriteStream(`./data/audio/${guildId}/${userId}.mp3`);
             const stream = ytdl(theme, {
                 filter: "audioonly",
                 quality: "highestaudio",

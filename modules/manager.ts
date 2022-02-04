@@ -39,16 +39,16 @@ export default class Manager {
             this.join()
         }
 
-        const maxVolume: number = DataManager.getGlobal("maxThemeVolume")
+        const maxVolume: number = DataManager.getGlobal(this.connection.guild.id, "maxThemeVolume")
 
         this.connection.playAudio(this.audioPlayer)
         this.audioPlayer.play(resource)
         resource.volume?.setVolume((resource.metadata.volume / 100) * (maxVolume / 100))
         
-        const maxThemeTime: number = DataManager.getGlobal("maxThemeTime")
+        const maxThemeTime: number = DataManager.getGlobal(this.connection.guild.id, "maxThemeTime")
 
         if (resource.playbackDuration > maxThemeTime) {
-            DataManager.setPlayTime(resource.metadata.userID, maxThemeTime)
+            DataManager.setPlayTime(this.connection.guild.id, resource.metadata.userID, maxThemeTime)
         }
 
         if (this.timeout) clearTimeout(this.timeout)

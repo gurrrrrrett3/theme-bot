@@ -106,3 +106,4 @@ dist
 config.json
 dist/config.json
 data/audio/
+data/settings
