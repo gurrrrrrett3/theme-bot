@@ -37,6 +37,22 @@ const Command = {
             )
         )
         .addSubcommand(new SlashCommandSubcommandBuilder()
+            .setName('setuserplaytime')
+            .setDescription('Set a user\'s theme playtime')
+            .addUserOption(new SlashCommandUserOption()
+            .setRequired(true)
+            .setName('user')
+            .setDescription('The user to set the playtime for')
+            )
+            .addIntegerOption(new SlashCommandIntegerOption()
+            .setRequired(true)
+            .setMinValue(1)
+            .setMaxValue(300)
+            .setName('playtime')
+            .setDescription('The playtime of the theme, in seconds')
+            )
+        )
+        .addSubcommand(new SlashCommandSubcommandBuilder()
             .setName('removeusertheme')
             .setDescription('Remove a user\'s theme')
             .addUserOption(new SlashCommandUserOption()
@@ -126,6 +142,16 @@ const Command = {
                     DataManager.setUserVolume(user2.id, volume)
                     interaction.reply({ephemeral: true, content: `Set ${user2.username}'s volume to ${volume}`})
                     break
+                case 'setuserplaytime':
+                    const user6 = commandOptions.getUser('user')
+                    const playtime = commandOptions.getInteger('playtime')
+                    if (!user6 || !playtime) {
+                        interaction.reply({ephemeral: true, content: 'You must provide a user and a playtime'})
+                        return
+                    }
+                    DataManager.setPlayTime(user6.id, playtime)
+                    interaction.reply({ephemeral: true, content: `Set ${user6.username}'s playtime to ${playtime}`})
+                    break
                 case 'removeusertheme':
                     const user3 = commandOptions.getUser('user')
                     if (!user3) {
@@ -162,7 +188,7 @@ const Command = {
                     DataManager.setGlobal("maxThemeVolume", scaling)
                     interaction.reply({ephemeral: true, content: `Set volume scaling to ${scaling}`})
                     break
-                case 'setmaxthemelength':
+                case 'setmaxplaytime':
                     const length = commandOptions.getInteger('length')
                     if (!length) {
                         interaction.reply({ephemeral: true, content: 'You must provide a length value'})
