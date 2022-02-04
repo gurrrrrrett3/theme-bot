@@ -49,7 +49,7 @@ export default class Manager {
 
         setTimeout(() => {
             this.stop()
-        }, parseInt(resource.metadata.playTime.toString()))
+        }, resource.metadata.playTime)
   }
   public queueAudioResource(resource: AudioResource<Track>) {
       this.queue.add(resource)
