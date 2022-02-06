@@ -22,6 +22,8 @@ export default class DataManager {
     const data = DataManager.openFile(guildId);
     data.users[userId] = newUser;
     DataManager.saveFile(guildId, data);
+
+    return newUser;
   }
 
   public static getUser(guildId: string, userId: string): UserData {
@@ -29,8 +31,7 @@ export default class DataManager {
     if (data.users[userId]) {
       return data.users[userId];
     } else {
-      this.newUser(guildId, userId);
-      return data.users[userId];
+      return this.newUser(guildId, userId);
     }
   }
 
@@ -90,11 +91,13 @@ export default class DataManager {
 
   public static getUserTheme(guildId: string, userId: string, type: ThemeType): string | null {
     const user = this.getUser(guildId, userId);
+    let theme: string | null = null;
     if (type === "ENTER") {
-        return user.enterTheme.theme;
+        theme = user.enterTheme.theme;
     } else {
-        return user.exitTheme.theme;
+        theme = user.exitTheme.theme;
     }
+    return theme ?? null;
   }
 
   public static getUserVolume(guildId: string, userId: string, type: ThemeType): number {
@@ -147,7 +150,7 @@ export default class DataManager {
       fetch(file)
         .then((res) => res.arrayBuffer())
         .then((buffer) => {
-          fs.writeFileSync(`./data/audio/${userId}.mp3`, Buffer.from(buffer));
+          fs.writeFileSync(`./data/audio/${guildId}/${userId}.mp3`, Buffer.from(buffer));
           resolve();
         })
         .catch((err) => {
