@@ -1,12 +1,7 @@
 import Client from "./modules/commandClient";
 import config from "./config.json";
-import { generateDependencyReport } from "@discordjs/voice";
 import DataManager from "./modules/dataManager";
-import Manager from "./modules/manager";
-import Track from "./modules/track";
 import PlayTrack from "./modules/playTrack";
-
-console.log(generateDependencyReport())
 
 const __Client = new Client(config.discord.TOKEN);
 

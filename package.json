@@ -31,6 +31,6 @@
         "opusscript": "^0.0.8",
         "youtube-dl-exec": "^2.0.2",
         "ytdl": "^1.4.1",
-        "ytdl-core": "^4.10.1"
+        "ytdl-core": "^4.11.0"
     }
 }
