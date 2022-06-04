@@ -37,8 +37,7 @@ export default class Track {
     public async createAudioResource(): Promise<AudioResource<Track>> {
         return new Promise(async (resolve, reject) => {
 
-            const themeLocation = path.resolve(`./data/audio/${this.guildID}/${this.userID}/${this.type}.mp3`);
-            console.log(themeLocation)
+            const themeLocation = path.resolve(`./data/audio/${this.guildID}/${this.userID}/${this.type}.wav`);
 
             if (fs.existsSync(themeLocation)) {
 

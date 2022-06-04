@@ -150,7 +150,7 @@ export default class DataManager {
       fetch(file)
         .then((res) => res.arrayBuffer())
         .then((buffer) => {
-          fs.writeFileSync(`./data/audio/${guildId}/${userId}.mp3`, Buffer.from(buffer));
+          fs.writeFileSync(`./data/audio/${guildId}/${userId}.wav`, Buffer.from(buffer));
           resolve();
         })
         .catch((err) => {

@@ -11,7 +11,7 @@ export default class AudioDownloader {
         }
 
         return new Promise<void>((resolve, reject) => {
-            const file = fs.createWriteStream(`./data/audio/${guildId}/${userId}/${type}.mp3`);
+            const file = fs.createWriteStream(`./data/audio/${guildId}/${userId}/${type}.wav`);
             const stream = ytdl(theme, {
                 filter: "audioonly",
                 quality: "highestaudio",
