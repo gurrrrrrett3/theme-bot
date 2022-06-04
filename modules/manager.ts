@@ -72,6 +72,7 @@ export default class Manager {
     }
 
   private monitor() {
+      //@ts-ignore
       this.audioPlayer.on("stateChange", (oldState, newState) => {
         
         console.log(`State Changed: ${oldState.status} => ${newState.status}`)
