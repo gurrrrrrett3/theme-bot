@@ -7,12 +7,13 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./database.db"
 }
 
 model Theme {
   id        String @id @default(cuid())
   discordId String
+  guildId   String
   type      String // ENTER | EXIT
   url       String
   startTime Float
@@ -23,9 +24,9 @@ model Theme {
 model GuildSettings {
   id           String  @id @default(cuid())
   guildId      String
-  maxVolume    Float // 0-100
-  maxLength    Float
-  enabled      Boolean
-  enterEnabled Boolean
-  exitEnabled  Boolean
+  maxVolume    Float @default(100) // 0-100
+  maxLength    Float @default(60) // 0-60
+  enabled      Boolean @default(true)
+  enterEnabled Boolean @default(true)
+  exitEnabled  Boolean @default(true)
 }
