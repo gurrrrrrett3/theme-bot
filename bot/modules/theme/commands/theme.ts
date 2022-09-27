@@ -152,16 +152,16 @@ const Command = new SlashCommandBuilder()
 
         if (!themeData) {
           await interaction.reply({
-            content: "You don't have a theme set for this type",
+            content: "You don't have a theme set for this type!",
             ephemeral: true,
           });
           return;
         }
 
-        await ThemeModule.getThemeModule().playThemeInteraction(interaction.guildId!, interaction.user.id, type);
+        const res = await ThemeModule.getThemeModule().playThemeInteraction(interaction.guildId!, interaction.user.id, type);
 
         await interaction.reply({
-          content: "Playing theme",
+          content: res,
           ephemeral: true,
         });
       })

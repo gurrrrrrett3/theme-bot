@@ -10,13 +10,22 @@ export default class ThemeModule extends Module {
   async onLoad(): Promise<Boolean> {
     bot.client.on("voiceStateUpdate", async (oldState, newState) => {
       if (oldState.channelId === newState.channelId) return;
+
+      const settings = await this.getGuildSettings(newState.guild.id);
+
+      if (!settings.enabled) return;
+
       if (newState.channelId === null && oldState.channelId !== null) {
         // User left a channel
+
+        if (!settings.exitEnabled) return;
 
         if (!oldState.member || oldState.member.user.bot) return;
         this.playTheme(oldState, "EXIT");
       } else if (newState.channelId !== null) {
         // User joined a channel or switched channels
+
+        if (!settings.enterEnabled) return;
 
         if (!newState.member || newState.member.user.bot) return;
         this.playTheme(newState, "ENTER");
@@ -99,15 +108,17 @@ export default class ThemeModule extends Module {
 
   async playThemeInteraction(guildId: string, userId: string, type: "ENTER" | "EXIT" = "ENTER") {
     const themeData = await this.getThemeData(userId, guildId, type);
-    if (!themeData) return;
+    if (!themeData) return "No theme found!";
     const voiceChannel = bot.client.guilds.cache.get(guildId)?.members.cache.get(userId)?.voice.channel;
-    if (!voiceChannel) return;
+    if (!voiceChannel) return "You are not in a voice channel!";
     MusicModule.getMusicModule().mm.addSong(
       voiceChannel.id,
       themeData.url,
       themeData.volume,
       themeData.endTime
     );
+
+    return "Playing theme!";
   }
 
   static getThemeModule(): ThemeModule {
