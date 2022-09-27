@@ -7,6 +7,7 @@ const Command = new SlashCommandBuilder()
   .setName("module")
   .setDescription("Manage loaded modules")
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+  .setEnabled(false)
   .addSubcommandGroup((group) =>
     group
       .setName("list")

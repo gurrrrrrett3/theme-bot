@@ -71,6 +71,11 @@ export default class CommandBuilder {
     return this;
   }
 
+  setDMPermission(allowed: boolean): this {
+    this._builder.setDMPermission(allowed);
+    return this;
+  }
+
   setDescriptionLocalization(locale: LocaleString, localizedDescription: string | null) {
     this._builder.setDescriptionLocalization(locale, localizedDescription);
     return this;

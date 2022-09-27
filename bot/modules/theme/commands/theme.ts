@@ -121,6 +121,50 @@ const Command = new SlashCommandBuilder()
 
         await interaction.showModal(modal);
       })
-  );
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("play")
+      .setDescription("Play your theme")
+      .addStringOption((option) =>
+        option
+          .setName("type")
+          .setDescription("The type of theme you want to play")
+          .setRequired(true)
+          .addChoices(
+            {
+              name: "Enter",
+              value: "ENTER",
+            },
+            {
+              name: "Exit",
+              value: "EXIT",
+            }
+          )
+      )
+      .setFunction(async (interaction) => {
+        const type = interaction.options.getString("type", true) as "ENTER" | "EXIT";
+        const themeData = await ThemeModule.getThemeModule().getThemeData(
+          interaction.user.id,
+          interaction.guildId!,
+          type
+        );
+
+        if (!themeData) {
+          await interaction.reply({
+            content: "You don't have a theme set for this type",
+            ephemeral: true,
+          });
+          return;
+        }
+
+        await ThemeModule.getThemeModule().playThemeInteraction(interaction.guildId!, interaction.user.id, type);
+
+        await interaction.reply({
+          content: "Playing theme",
+          ephemeral: true,
+        });
+      })
+  )
 
 export default Command;

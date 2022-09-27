@@ -1,4 +1,4 @@
-import { VoiceState } from "discord.js";
+import { ActivityType, ChannelType, VoiceState } from "discord.js";
 import { bot, db } from "../../..";
 import Module from "../../loaders/base/module";
 import MusicModule from "../music";
@@ -9,7 +9,6 @@ export default class ThemeModule extends Module {
 
   async onLoad(): Promise<Boolean> {
     bot.client.on("voiceStateUpdate", async (oldState, newState) => {
-
       if (oldState.channelId === newState.channelId) return;
       if (newState.channelId === null && oldState.channelId !== null) {
         // User left a channel
@@ -23,6 +22,18 @@ export default class ThemeModule extends Module {
         this.playTheme(newState, "ENTER");
       }
     });
+
+    const statusInterval = setInterval(async () => {
+      const guilds    = bot.client.guilds.cache.size;
+      const users     = bot.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0);
+      const channels  = bot.client.channels.cache.filter((c) => c.type === ChannelType.GuildVoice).size;
+      const themes    = await db.theme.count();
+
+      bot.client.user?.setActivity({
+        name: `${guilds} guilds, ${users} users, ${channels} channels, ${themes} themes`,
+        type: ActivityType.Watching,
+      })
+    }, 10000);
 
     return true;
   }
@@ -62,9 +73,27 @@ export default class ThemeModule extends Module {
     const themeData = await this.getThemeData(state.member.user.id, state.guild.id, type);
     console.log(themeData);
     if (!themeData) return;
-   const voiceChannel = state.channel!;
+    const voiceChannel = state.channel!;
 
-    MusicModule.getMusicModule().mm.addSong(voiceChannel.id, themeData.url, themeData.volume, themeData.endTime);
+    MusicModule.getMusicModule().mm.addSong(
+      voiceChannel.id,
+      themeData.url,
+      themeData.volume,
+      themeData.endTime
+    );
+  }
+
+  async playThemeInteraction(guildId: string, userId: string, type: "ENTER" | "EXIT" = "ENTER") {
+    const themeData = await this.getThemeData(userId, guildId, type);
+    if (!themeData) return;
+    const voiceChannel = bot.client.guilds.cache.get(guildId)?.members.cache.get(userId)?.voice.channel;
+    if (!voiceChannel) return;
+    MusicModule.getMusicModule().mm.addSong(
+      voiceChannel.id,
+      themeData.url,
+      themeData.volume,
+      themeData.endTime
+    );
   }
 
   static getThemeModule(): ThemeModule {

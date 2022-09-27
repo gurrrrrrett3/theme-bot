@@ -12,6 +12,7 @@ import SlashCommandBuilder from "../../../loaders/objects/customSlashCommandBuil
 const Command = new SlashCommandBuilder()
   .setName("themeadmin")
   .setDescription("idk, admin stuff")
+  .setDMPermission(false)
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   .addSubcommand((subcommand) =>
     subcommand
