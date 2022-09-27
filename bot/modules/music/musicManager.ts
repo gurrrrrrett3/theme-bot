@@ -26,7 +26,7 @@ export default class MusicManager {
     let song;
 
     try {
-      song = await Track.from(url);
+      song = await Track.from(url, duration);
     } catch (error) {
       console.error(error);
       return;

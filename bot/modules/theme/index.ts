@@ -15,14 +15,12 @@ export default class ThemeModule extends Module {
       if (newState.channelId === null && oldState.channelId !== null) {
         // User left a channel
 
-        console.log("user left channel");
         if (!oldState.member || oldState.member.user.bot) return;
 
         this.playTheme(oldState.guild.id, oldState.member.id, "EXIT");
       } else if (newState.channelId !== null) {
         // User joined a channel or switched channels
 
-        console.log("user joined channel");
         if (!newState.member || newState.member.user.bot) return;
 
         this.playTheme(newState.guild.id, newState.member.id);
