@@ -1,4 +1,4 @@
-import { AudioPlayerStatus } from "@discordjs/voice";
+import { VoiceState } from "discord.js";
 import { bot, db } from "../../..";
 import Module from "../../loaders/base/module";
 import MusicModule from "../music";
@@ -9,28 +9,25 @@ export default class ThemeModule extends Module {
 
   async onLoad(): Promise<Boolean> {
     bot.client.on("voiceStateUpdate", async (oldState, newState) => {
-      console.log("voice state update");
 
       if (oldState.channelId === newState.channelId) return;
       if (newState.channelId === null && oldState.channelId !== null) {
         // User left a channel
 
         if (!oldState.member || oldState.member.user.bot) return;
-
-        this.playTheme(oldState.guild.id, oldState.member.id, "EXIT");
+        this.playTheme(oldState, "EXIT");
       } else if (newState.channelId !== null) {
         // User joined a channel or switched channels
 
         if (!newState.member || newState.member.user.bot) return;
-
-        this.playTheme(newState.guild.id, newState.member.id);
+        this.playTheme(newState, "ENTER");
       }
     });
 
     return true;
   }
 
-  async getThemeData(discordId: string, guildId: string, type: "ENTER" | "EXIT" = "ENTER") {
+  async getThemeData(discordId: string, guildId: string, type: "ENTER" | "EXIT") {
     return await db.theme.findFirst({
       where: {
         AND: {
@@ -60,12 +57,12 @@ export default class ThemeModule extends Module {
     return guildSettings;
   }
 
-  async playTheme(guildId: string, userId: string, type: "ENTER" | "EXIT" = "ENTER") {
-    const themeData = await this.getThemeData(userId, guildId, type);
+  async playTheme(state: VoiceState, type: "ENTER" | "EXIT" = "ENTER") {
+    if (!state.member || !state.member.user) return;
+    const themeData = await this.getThemeData(state.member.user.id, state.guild.id, type);
     console.log(themeData);
     if (!themeData) return;
-    const voiceChannel = bot.client.guilds.cache.get(guildId)?.members.cache.get(userId)?.voice.channel;
-    if (!voiceChannel) return;
+   const voiceChannel = state.channel!;
 
     MusicModule.getMusicModule().mm.addSong(voiceChannel.id, themeData.url, themeData.volume, themeData.endTime);
   }

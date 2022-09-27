@@ -33,7 +33,7 @@ export class Track {
       return new this({
         url: TrackInfo.videoDetails.video_url,
         title: TrackInfo.videoDetails.title,
-        duration: duration
+        duration: duration > parseInt(TrackInfo.videoDetails.lengthSeconds) ? parseInt(TrackInfo.videoDetails.lengthSeconds) : duration,
       });
     } else {
       const result = await youtube.searchOne("");
