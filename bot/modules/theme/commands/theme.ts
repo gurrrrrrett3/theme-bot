@@ -77,10 +77,21 @@ const Command = new SlashCommandBuilder()
 
           if (!url || !length || !volume) return;
 
-          modal.reply({
-            content: "Settings saved!",
-            ephemeral: true,
-          })
+          if (parseFloat(length) > guildSettings.maxLength) {
+            await modal.reply({
+              content: `The length must be less than ${guildSettings.maxLength} seconds`,
+              ephemeral: true,
+            });
+            return;
+          }
+
+          if (parseFloat(volume) > guildSettings.maxVolume) {
+            await modal.reply({
+              content: `The volume must be less than ${guildSettings.maxVolume}`,
+              ephemeral: true,
+            });
+            return;
+          }
 
           if (themeData) {
             await db.theme.update({
