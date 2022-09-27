@@ -23,16 +23,30 @@ export default class ThemeModule extends Module {
       }
     });
 
+    let currentStatus = 0;
+
     const statusInterval = setInterval(async () => {
       const guilds    = bot.client.guilds.cache.size;
       const users     = bot.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0);
       const channels  = bot.client.channels.cache.filter((c) => c.type === ChannelType.GuildVoice).size;
       const themes    = await db.theme.count();
 
-      bot.client.user?.setActivity({
-        name: `${guilds} guilds, ${users} users, ${channels} channels, ${themes} themes`,
+      const statuses = [
+        `${users} users in ${guilds} guilds`,
+        `${channels} voice channels`,
+        `${themes} themes`,
+      ];
+
+      bot.client.user?.setActivity(statuses[currentStatus], {
         type: ActivityType.Watching,
-      })
+      });
+
+      currentStatus++;
+
+      if (currentStatus >= statuses.length) {
+        currentStatus = 0;
+      }
+     
     }, 10000);
 
     return true;
