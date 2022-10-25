@@ -29,4 +29,6 @@ model GuildSettings {
   enabled      Boolean @default(true)
   enterEnabled Boolean @default(true)
   exitEnabled  Boolean @default(true)
+  announcementsEnabled Boolean @default(true)
+  announcementsChannelId String?
 }

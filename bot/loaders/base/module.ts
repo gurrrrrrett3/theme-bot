@@ -3,6 +3,7 @@ import { CustomCommandBuilder } from "../loaderTypes";
 import fs from "fs"
 import path from "path"
 import { Client } from "discord.js";
+import chalk from "chalk";
 
 export default class Module  {
      name: string = ""
@@ -14,7 +15,7 @@ export default class Module  {
     constructor(bot: Bot) {
         this.client = bot.client;
         this.client.on("ready", () => {
-            console.info(`Loaded module ${this.constructor.name}`);
+            console.info(chalk.bgBlue(`[${this.name}]`), `Loaded module ${this.constructor.name}`);
         })
     }
 
@@ -22,7 +23,7 @@ export default class Module  {
      * Override this method to run code when the module is loaded
      */
     async onLoad(): Promise<Boolean> {
-        console.log(`Loaded module ${this.name}`);
+        console.log(chalk.bgGreen(`[${this.name}]`), `Ready!`);
         return true;
     }
 
@@ -30,13 +31,13 @@ export default class Module  {
      * Override this method to run code when the module is unloaded
      */
     async onUnload(): Promise<Boolean> {
-        console.log(`Unloaded module ${this.name}`);
+        console.log(chalk.bgGreen(`[${this.name}]`), `Succcessfully unloaded!`);
         return true;
     }
          
     public async loadCommands() {
         if (!fs.existsSync(path.resolve(`./dist/bot/modules/${this.name}/commands`))) {
-            console.log(`No commands found for module ${this.name}, skipping...`)
+            console.log(chalk.bgYellow(`[${this.name}]`), `No commands found for module, skipping...`)
             return []
         }
         const commandFolder = fs.readdirSync(path.resolve(`./dist/bot/modules/${this.name}/commands`));

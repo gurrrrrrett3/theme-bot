@@ -1,5 +1,6 @@
 import {
   ActionRowBuilder,
+  ChannelType,
   ModalBuilder,
   PermissionFlagsBits,
   TextInputBuilder,
@@ -121,7 +122,7 @@ const Command = new SlashCommandBuilder()
       .setName("guildoptions")
       .setDescription("edit guild options")
       .setFunction(async (interaction) => {
-        const id = Date.now().toString()
+        const id = Date.now().toString();
         const guildData = await ThemeModule.getThemeModule().getGuildSettings(interaction.guildId!);
 
         const modal = new ModalBuilder()
@@ -206,15 +207,69 @@ const Command = new SlashCommandBuilder()
             });
           }
 
-            await modal.reply({
-                content: "Guild settings updated!",
-                ephemeral: true,
-            })
-
+          await modal.reply({
+            content: "Guild settings updated!",
+            ephemeral: true,
+          });
         });
 
         await interaction.showModal(modal);
       })
+  )
+  .addSubcommandGroup((group) =>
+    group
+      .setName("announcements")
+      .setDescription("edit announcements")
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("enabled")
+          .setDescription("enable/disable announcements")
+          .addBooleanOption((option) =>
+            option.setName("enabled").setDescription("enable/disable announcements").setRequired(true)
+          )
+          .setFunction(async (interaction) => {
+            const enabled = interaction.options.getBoolean("enabled", true);
+            const guildData = await ThemeModule.getThemeModule().getGuildSettings(interaction.guildId!);
+
+            if (guildData) {
+              await db.guildSettings.update({
+                where: {
+                  id: guildData.id,
+                },
+                data: {
+                  announcementsEnabled: enabled,
+                },
+              });
+            }
+          })
+      )
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("channel")
+          .setDescription("set announcement channel")
+          .addChannelOption((option) =>
+            option
+              .setName("channel")
+              .setDescription("channel to send announcements in")
+              .setRequired(true)
+              .addChannelTypes(ChannelType.GuildText, ChannelType.GuildNews)
+          )
+          .setFunction(async (interaction) => {
+            const channel = interaction.options.getChannel("channel", true);
+            const guildData = await ThemeModule.getThemeModule().getGuildSettings(interaction.guildId!);
+
+            if (guildData) {
+              await db.guildSettings.update({
+                where: {
+                  id: guildData.id,
+                },
+                data: {
+                  announcementsChannelId: channel.id,
+                },
+              });
+            }
+          })
+      )
   );
 
 export default Command;
