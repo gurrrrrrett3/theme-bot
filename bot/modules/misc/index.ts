@@ -1,11 +1,11 @@
 import { bot } from "../../..";
 import Module from "../../loaders/base/module";
 
-export default class CoreModule extends Module {
-  name = "core";
-  description = "Core module";
+export default class MiscModule extends Module {
+  name = "misc";
+  description = "Misc module";
 
-  getCoreModule(): CoreModule {
-    return bot.moduleLoader.getModule("core") as CoreModule;
+  getMiscModule(): MiscModule {
+    return bot.moduleLoader.getModule("misc") as MiscModule;
   }
 }
